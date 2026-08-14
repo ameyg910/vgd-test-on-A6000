@@ -1,0 +1,37 @@
+# 2D toy validation, ported from the screening task onto the GuidanceSpec API.
+# Values reproduce the screening results exactly; see docs/porting_notes.md.
+name: toy_2d
+seed: 0
+
+sampler:
+  num_samples: 1500
+  num_steps: 150
+  eta: 1.0            # ancestral; deterministic DDIM reached fewer modes at equal step count
+  data_var: 2.0       # per-dimension variance of the ring, used by the noise-aware weight
+  shaped_weights: true
+
+sweep:
+  weights: [0.0, 0.25, 0.5, 0.75, 1.0, 1.5, 2.0, 3.0, 4.0, 5.0]
+  seeds: [0, 1, 2]
+
+panels:
+  weights: [0.0, 1.0, 3.0, 10.0]
+
+grid:
+  w1: [0.0, 1.0, 2.0, 4.0]
+  w2: [0.0, 0.25, 0.5, 1.0]
+  target_mode_index: 4      # (-2, 0): opposed to the right-half verifier, not cooperating
+  target_sigma: 1.0
+  seeds: [0]
+
+strategies:
+  w1: 2.0
+  w2_values: [0.0, 0.25, 0.5, 1.0, 2.0]
+  names: [sum, normalized, projected, alternating]
+
+ablation:
+  weights: [0.5, 1.0, 2.0, 3.0, 5.0, 8.0]
+
+learned:
+  weights: [0.0, 1.0, 3.0, 6.0]
+  preferred_modes: [0, 1, 7]

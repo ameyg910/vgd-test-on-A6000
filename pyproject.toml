@@ -1,0 +1,43 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "prescriptive-diffusion"
+version = "0.3.0"
+description = "Policy-guided diffusion for prescriptive advice in embedding space"
+requires-python = ">=3.10"
+dependencies = [
+    "torch>=2.4",
+    "numpy>=1.24",
+    "scipy>=1.10",
+    "pydantic>=2.6",
+    "pydantic-settings>=2.2",
+    "structlog>=24.1",
+    "pyyaml>=6.0",
+]
+
+[project.optional-dependencies]
+train = ["wandb>=0.17", "sentence-transformers>=3.0", "transformers>=4.44", "einops>=0.8"]
+viz = ["matplotlib>=3.7", "pandas>=2.0"]
+dev = ["pytest>=7.4", "mypy>=1.10", "types-PyYAML", "nbformat>=5.9", "nbclient>=0.9", "ipykernel>=6.29"]
+
+[tool.setuptools]
+packages = ["diffusion", "diffusion.base", "diffusion.base.sampling", "diffusion.data",
+            "diffusion.eval",
+            "verifiers", "experiments", "experiments.toy_2d"]
+py-modules = ["config", "logging_config"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+
+[tool.mypy]
+strict = true
+files = ["config.py", "logging_config.py", "diffusion", "verifiers", "experiments"]
+warn_unused_configs = true
+disallow_untyped_defs = true
+no_implicit_reexport = false
+
+[[tool.mypy.overrides]]
+module = ["torch.*", "scipy.*", "matplotlib.*", "pandas.*", "wandb.*", "structlog.*", "numpy.*"]
+ignore_missing_imports = true

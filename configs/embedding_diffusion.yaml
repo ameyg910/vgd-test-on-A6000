@@ -1,0 +1,50 @@
+# Phase 1 embedding-space diffusion. Defaults are the A6000 configuration;
+# `--preset smoke` in scripts/train_embedding_diffusion.py shrinks everything
+# for a CPU sanity run without editing this file.
+name: embedding_diffusion
+seed: 0
+
+data:
+  # Path is relative to the configured data_dir; the Infra Student's W2
+  # deliverable lands here. Leave `synthetic: true` until it does.
+  corpus: advice_pairs.npz
+  synthetic: true
+  synthetic_pairs: 30000
+  dim: 768
+  normalize: whiten          # whiten | global | none  (see W3 ablation)
+  holdout_issues: 200
+
+model:
+  num_tokens: 12
+  hidden_dim: 512
+  depth: 8
+  num_heads: 8
+  time_embed_dim: 256
+
+edm:
+  # sigma_data is measured from the training split at startup and overwrites
+  # this value; it is recorded here only so the config hash pins what was used.
+  sigma_data: null
+  sigma_min: 0.002
+  sigma_max: 80.0
+  rho: 7.0
+  p_mean: -1.2
+  p_std: 1.2
+
+train:
+  steps: 60000
+  batch_size: 256
+  learning_rate: 2.0e-4
+  warmup_steps: 500
+  ema_decay: 0.9995
+  cfg_dropout: 0.1
+  grad_clip: 1.0
+  amp_dtype: bf16
+  conditional: true
+  log_every: 100
+  checkpoint_every: 2000
+
+sample:
+  num_steps: 32
+  num_samples: 1000
+  cfg_scale: 2.0
